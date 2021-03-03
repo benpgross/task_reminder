@@ -15,6 +15,6 @@ When running the google APIs run the quick start guides once and go through the 
  
 
 ## Future plans:
--stop the google oauth 2 warnings from filling up the log
--check the mimetext formatting and split into multiple texts messages that are too long to send in one message
--enable a reply feature so that people can indicate that they’ve done a chore in the text instead of using the gsheet \(I've already started this process by making each chore have an automatically generated unique ID based on the timestamp in epoch time. For an example of how to do that check out [my example](./google_sheets_unique_id.js) and [this guide](https://yagisanatode.com/2019/01/23/google-apps-script-adding-a-unique-id-in-a-cell-on-edit-of-an-adjacent-cell-using-time/)\). 
+- stop the google oauth 2 warnings from filling up the log
+- check the mimetext formatting and split into multiple texts messages that are too long to send in one message
+- enable a reply feature so that people can indicate that they’ve done a chore in the text instead of using the gsheet \(I've already started this process by making each chore have an automatically generated unique ID based on the timestamp in epoch time. For an example of how to do that check out [my example](./google_sheets_unique_id.js) and [this guide](https://yagisanatode.com/2019/01/23/google-apps-script-adding-a-unique-id-in-a-cell-on-edit-of-an-adjacent-cell-using-time/)\). 
