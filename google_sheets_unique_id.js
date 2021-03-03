@@ -11,6 +11,7 @@ The goal of the ID is for future iterations of the project to be
 able to respond to the reminder text with the ID number to specify
 which Chore you've completed - this is key since task will likely
 have the same names. 
+
 */
 function onEdit() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
