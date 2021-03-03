@@ -87,7 +87,7 @@ def process_task_data(sheet_data):
         full_dataset = pd.DataFrame(sheet_data, columns=column_names).sort_values(["Name","Due Date"])
         full_dataset['Completed'] = full_dataset['Completed'].str.strip()
         full_dataset['Completed'] = full_dataset['Completed'].str.lower()
-        #separate out the tasks that were 
+        #separate out the tasks that were completed
         only_undone_tasks = pd.DataFrame(full_dataset[full_dataset['Completed'] != 'done'])
         #remove accidental pre or post spaces in the name, make the text lowercase 
         only_undone_tasks['Name'] = only_undone_tasks['Name'].str.strip()
@@ -101,7 +101,7 @@ def process_task_data(sheet_data):
        
         for name in names:
             message = ""
-            #find 
+            #find tasks that are overdue 
             vals = only_undone_tasks.loc[(only_undone_tasks['Name']==name) &(only_undone_tasks['Due Date'] < pd.to_datetime('today'))]
             outstanding_count = len(vals)
             if(outstanding_count > 0):
@@ -110,7 +110,7 @@ def process_task_data(sheet_data):
                 if(outstanding_count>1):
                     task = "tasks"
                     message = message + f"""you have {outstanding_count} {task} outstanding. The most recent one is: {latest['Task'].item().strip()} - due {latest['Due Date'].item().strftime('%b %d %Y')}. """
-                else: #drives me crazy when programers ignore singular vs. plural to save a few lines of code
+                else: 
                     message = message + f"""uou have {outstanding_count} {task} outstanding. It is:{latest['Task'].item().strip()} - due {latest['Due Date'].item().strftime('%b %d %Y')}. """
             vals2 = only_undone_tasks.loc[(only_undone_tasks['Name']==name) & (only_undone_tasks['Due Date'] > pd.to_datetime('today'))]
             to_do = len(vals2)
@@ -135,8 +135,6 @@ def make_new_email(name, message):
 
     Args:
     name: Name of recipient
-    to: cellphone number of the receiver.
-    subject: The subject of the email message.
     message_text: The text of the email message.
 
     Returns:
@@ -147,9 +145,9 @@ def make_new_email(name, message):
     message = MIMEText(message_text)
     message['to'] = get_carrier_return_address(number_dictionary[name])
     #this was an email address I used for a different project that I wasn't nervous about 
-    #giving extended send etc. crednetials to
+    #giving extended send etc. credentials to
     message['from'] = 'hcrifall18@gmail.com'
-    #the subject shows up in the text as being within perenthesis so "(Task reminder)"
+    #the subject shows up in the text as being within parenthesis so "(Task reminder)"
     message['subject'] = """Task reminder\n"""
     b64_bytes = base64.urlsafe_b64encode(message.as_bytes())
     b64_string = b64_bytes.decode()
@@ -167,7 +165,8 @@ def get_carrier_return_address(number):
     """
 
     #thanks https://stackoverflow.com/a/61241420 for the api
-    time.sleep(5)
+    time.sleep(5) 
+    #sleeps for five seconds to avoid API timeouts
     url='https://api.telnyx.com/v1/phone_number/1' + number
     response=requests.get(url)
     if not response:
