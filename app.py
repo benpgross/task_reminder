@@ -39,7 +39,7 @@ import time
 
 
 # The ID and range of a sample spreadsheet.
-TaskS_SPREADSHEET_ID = hidden_variables.TaskS_SPREADSHEET_ID
+TASKS_SPREADSHEET_ID = hidden_variables.TASKS_SPREADSHEET_ID
 SPREADSHEET_RANGE = 'Sheet1!A1:E'
 key=hidden_variables.key
 number_dictionary = hidden_variables.numbers
@@ -70,7 +70,7 @@ def connect_to_sheets():
     # Call the Sheets API
     sheet = service.spreadsheets()
     #print(sheet.values())
-    result = sheet.values().get(spreadsheetId=TaskS_SPREADSHEET_ID,
+    result = sheet.values().get(spreadsheetId=TASKS_SPREADSHEET_ID,
                                 range=SPREADSHEET_RANGE).execute()
     sheet_data = result.get('values', [])
     return sheet_data
