@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 
 """
-Goal: make an easily adjustable Task sheet to plan out and remind myself and my
-housemates of Tasks for the semester.
+Goal: make an easily adjustable reminder system to keep myself and my roomates accountable
+for 
 
 Implementation:
 -pull from google sheets
 -parse data from sheet 
 -determine if reminder messages need to be sent
 -if yes - connect to gmail api
--format messages to gmail api 
+-determine cell number to email conversion
+-format messages in MIMEtext to send through gmail api 
+-send reminders
+(runs weekly via Launchd on my mac)
 
 Areas for improvment:
 -more logging & comments
