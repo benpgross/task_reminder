@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 """
+See the read me for the full background: https://github.com/benpgross/task_reminder/blob/master/README.md
 Goal: make an easily adjustable reminder system to keep myself and my roomates accountable
-for 
+for our task/chores throughout the semester
 
 Implementation:
 -pull from google sheets
@@ -82,51 +83,51 @@ def process_task_data(sheet_data):
         logging.info('No data found.')
         sys.exit()
 
-    else:
-        column_names = sheet_data.pop(0)
-       # print(type(keys))
-       # print(keys)
-        #order data by the person who needs to do the chore, then by the order the chores are due 
-        full_dataset = pd.DataFrame(sheet_data, columns=column_names).sort_values(["Name","Due Date"])
-        full_dataset['Completed'] = full_dataset['Completed'].str.strip()
-        full_dataset['Completed'] = full_dataset['Completed'].str.lower()
-        #separate out the tasks that were completed
-        only_undone_tasks = pd.DataFrame(full_dataset[full_dataset['Completed'] != 'done'])
-        #remove accidental pre or post spaces in the name, make the text lowercase 
-        only_undone_tasks['Name'] = only_undone_tasks['Name'].str.strip()
-        only_undone_tasks['Name'] = only_undone_tasks['Name'].str.lower()
-        only_undone_tasks['Due Date']=pd.to_datetime(only_undone_tasks['Due Date'])
-        only_undone_tasks['Completed']=only_undone_tasks['Completed'].str.lower()
-        only_undone_tasks['Completed']=only_undone_tasks['Completed'].str.strip()
-        
-        #get the set of people who need to do each task
-        names = only_undone_tasks.Name.unique()
-       
-        for name in names:
-            message = ""
-            #find tasks that are overdue 
-            vals = only_undone_tasks.loc[(only_undone_tasks['Name']==name) &(only_undone_tasks['Due Date'] < pd.to_datetime('today'))]
-            outstanding_count = len(vals)
-            if(outstanding_count > 0):
-                latest = vals.iloc[-1:]
-                task = "task"
-                if(outstanding_count>1):
-                    task = "tasks"
-                    message = message + f"""you have {outstanding_count} {task} outstanding. The most recent one is: {latest['Task'].item().strip()} - due {latest['Due Date'].item().strftime('%b %d %Y')}. """
-                else: 
-                    message = message + f"""uou have {outstanding_count} {task} outstanding. It is:{latest['Task'].item().strip()} - due {latest['Due Date'].item().strftime('%b %d %Y')}. """
-            vals2 = only_undone_tasks.loc[(only_undone_tasks['Name']==name) & (only_undone_tasks['Due Date'] > pd.to_datetime('today'))]
-            to_do = len(vals2)
-            if(to_do > 0):
-                newest = vals2.iloc[:1]
-                Your = "your"
-                if message!="":
-                    Your = 'Your'
-                message = message + f"""{Your} next task is: {newest['Task'].item().strip()} due {newest['Due Date'].item().strftime('%b %d %Y')}."""
 
-            else:
-                message = message + "You have no upcoming scheduled Tasks."
-            emails_to_send.append(make_new_email(name,message))
+    column_names = sheet_data.pop(0)
+   # print(type(keys))
+   # print(keys)
+    #order data by the person who needs to do the chore, then by the order the chores are due 
+    full_dataset = pd.DataFrame(sheet_data, columns=column_names).sort_values(["Name","Due Date"])
+    full_dataset['Completed'] = full_dataset['Completed'].str.strip()
+    full_dataset['Completed'] = full_dataset['Completed'].str.lower()
+    #separate out the tasks that were completed
+    only_undone_tasks = pd.DataFrame(full_dataset[full_dataset['Completed'] != 'done'])
+    #remove accidental pre or post spaces in the name, make the text lowercase 
+    only_undone_tasks['Name'] = only_undone_tasks['Name'].str.strip()
+    only_undone_tasks['Name'] = only_undone_tasks['Name'].str.lower()
+    only_undone_tasks['Due Date']=pd.to_datetime(only_undone_tasks['Due Date'])
+    only_undone_tasks['Completed']=only_undone_tasks['Completed'].str.lower()
+    only_undone_tasks['Completed']=only_undone_tasks['Completed'].str.strip()
+
+    #get the set of people who need to do each task
+    names = only_undone_tasks.Name.unique()
+
+    for name in names:
+        message = ""
+        #find tasks that are overdue 
+        vals = only_undone_tasks.loc[(only_undone_tasks['Name']==name) &(only_undone_tasks['Due Date'] < pd.to_datetime('today'))]
+        outstanding_count = len(vals)
+        if(outstanding_count > 0):
+            latest = vals.iloc[-1:]
+            task_or_tasks = "task"
+            if(outstanding_count>1):
+                task_or_tasks = "tasks"
+                message = message + f"""you have {outstanding_count} {task_or_tasks} outstanding. The most recent one is: {latest['Task'].item().strip()} - due {latest['Due Date'].item().strftime('%b %d %Y')}. """
+            else: 
+                message = message + f"""you have {outstanding_count} {task_or_tasks} outstanding. It is:{latest['Task'].item().strip()} - due {latest['Due Date'].item().strftime('%b %d %Y')}. """
+        vals2 = only_undone_tasks.loc[(only_undone_tasks['Name']==name) & (only_undone_tasks['Due Date'] > pd.to_datetime('today'))]
+        to_do = len(vals2)
+        if(to_do > 0):
+            newest = vals2.iloc[:1]
+            Your_or_your = "your"
+            if message!="":
+                Your_or_your = 'Your'
+            message = message + f"""{Your_or_your} next task is: {newest['Task'].item().strip()} due {newest['Due Date'].item().strftime('%b %d %Y')}."""
+
+        else:
+            message = message + "You have no upcoming scheduled Tasks."
+        emails_to_send.append(make_new_email(name,message))
 
     return emails_to_send
 
@@ -168,8 +169,8 @@ def get_carrier_return_address(number):
     """
 
     #thanks https://stackoverflow.com/a/61241420 for the api
+    #sleeps for five seconds to avoid API timeouts since I don't want to pay for an API (no bulk api requests available either)
     time.sleep(5) 
-    #sleeps for five seconds to avoid API timeouts
     url='https://api.telnyx.com/v1/phone_number/1' + number
     response=requests.get(url)
     if not response:
@@ -261,7 +262,7 @@ if __name__ == '__main__':
         logging.info("No messages to send - program complete.")
         sys.exit()
     gmail_service = connect_to_gmail()
-    logging.info("connect to gmail established")
+    logging.info("connection to gmail established")
     for message in messages_to_send:
         logging.info(send(gmail_service, message))
     logging.info("~program completed~")
