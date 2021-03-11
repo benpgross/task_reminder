@@ -83,10 +83,8 @@ def process_task_data(sheet_data):
         logging.info('No data found.')
         sys.exit()
 
-
+    #remove column headers
     column_names = sheet_data.pop(0)
-   # print(type(keys))
-   # print(keys)
     #order data by the person who needs to do the chore, then by the order the chores are due 
     full_dataset = pd.DataFrame(sheet_data, columns=column_names).sort_values(["Name","Due Date"])
     full_dataset['Completed'] = full_dataset['Completed'].str.strip()
